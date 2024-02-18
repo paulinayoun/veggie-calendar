@@ -1,10 +1,16 @@
 <script>
+    import Button from "../UI/Button.svelte";
+    import { createEventDispatcher } from 'svelte';
+
+    export let id;
     export let title;
     export let subtitle;
     export let imgUrl;
-    export let discription;
+    export let description;
     export let address;
-    export let contact;
+    export let email;
+
+    const dispatch = createEventDispatcher();
 </script>
 <style>
     article {
@@ -20,12 +26,12 @@
     padding: 1rem;
   }
 
-  .image {
+  .img {
     width: 100%;
     height: 14rem;
   }
 
-  .image img {
+  .img img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -58,6 +64,9 @@
   div {
     text-align: right;
   }
+  .content {
+    height: 4rem;
+  }
 </style>
 <article>
     <header>
@@ -69,11 +78,14 @@
         <img src="{imgUrl}" alt={title}>
     </div>
     <div class="content">
-        <p>{discription}</p>
+        <p>{description}</p>
     </div>
     <footer>   
-        <a href="mailto:{contact}">Contact</a>
-        <button>Show Detail</button>
-        <button>Heart</button>
+        <Button href="mailto:{email}" caption="Contact" />
+        <Button type="buttion" caption="Show Detail"/>
+        <Button mode="outline" 
+        type="buttion" 
+        caption="Heart" 
+        on:click={() => dispatch('toggleheart', id)} />
     </footer>
 </article>
