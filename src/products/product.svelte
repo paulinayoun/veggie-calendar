@@ -9,6 +9,7 @@
     export let description;
     export let address;
     export let email;
+    export let isOn;
 
     const dispatch = createEventDispatcher();
 </script>
@@ -83,9 +84,10 @@
     <footer>   
         <Button href="mailto:{email}" caption="Contact" />
         <Button type="buttion" caption="Show Detail"/>
-        <Button mode="outline" 
+        <Button 
+        mode="outline" 
         type="buttion" 
-        caption="Heart" 
+        caption="{isOn ? 'Not Heart' : 'Heart'}" 
         on:click={() => dispatch('toggleheart', id)} />
     </footer>
 </article>

@@ -1,12 +1,11 @@
 <script>
 	import { each, prevent_default } from "svelte/internal";
 	import Header  from "./UI/Header.svelte";
-	import Product from "./products/product.svelte"
+	import Product from "./products/Product.svelte"
 	import TextInput from "./UI/TextInput.svelte";
-    import ProductGrid from "./products/productGrid.svelte";
+    import ProductGrid from "./products/ProductGrid.svelte";
 	import Button from "./UI/Button.svelte";
 
-	let id = '';
 	let title = '';
 	let subtitle = '';
 	let imgUrl = '';
@@ -23,7 +22,7 @@
 			description: 'The harvest season for apples peaks in autumn, making it the best time to visit orchards.',
 			address: 'Seoul',
 			email: 'youn@labnightowl.dev',
-			heart: false
+			isHeart: false
 		},
 		{
 			id: 'Product2',
@@ -33,7 +32,7 @@
 			description: 'The harvest season for apples peaks in autumn, making it the best time to visit orchards.',
 			address: 'Seoul',
 			email: 'youn@labnightowl.dev',
-			heart: false
+			isHeart: false
 		},
 		{
 			id: 'Product3',
@@ -43,7 +42,7 @@
 			description: 'The harvest season for apples peaks in autumn, making it the best time to visit orchards.',
 			address: 'Seoul',
 			email: 'youn@labnightowl.dev',
-			heart: false
+			isHeart: false
 		},
 		
 	]
@@ -64,7 +63,7 @@
 	
 	function toggleheart(event){
 		const id = event.detail;
-		const updatedProduct = { ...products.find(m => m.id === id)}; // 업데이트 전 배열복사
+		const updatedProduct = { ...products.find(m => m.id === id) }; // 업데이트 전 배열복사
 		updatedProduct.isHeart = !updatedProduct.isHeart;
 		const productIndex = products.findIndex(m => m.id === id);
 		const updatedProduts = [...products]; // 배열 전체 복사

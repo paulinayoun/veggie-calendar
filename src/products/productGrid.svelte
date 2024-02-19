@@ -1,6 +1,6 @@
 <script>
-    import product from './product.svelte'
-    import Product from "./product.svelte"
+    import product from './Product.svelte'
+    import Product from "./Product.svelte"
 
     export let products;
 </script>
@@ -28,7 +28,7 @@
             description={product.description}
             imgUrl={product.imgUrl}
             email={product.email}
-            on:toggleheart
-            />
+            isOn={product.isHeart}
+            on:toggleheart />
     {/each}
 </section>
