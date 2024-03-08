@@ -5,20 +5,14 @@
 	import TextInput from "./UI/TextInput.svelte";
     import ProductGrid from "./products/ProductGrid.svelte";
 	import Button from "./UI/Button.svelte";
-
-	let title = '';
-	let subtitle = '';
-	let imgUrl = '';
-	let address = '';
-	let email = '';
-	let description = '';
+	import EditProduct from "./products/EditProduct.svelte";
 
 	let products = [
 		{
 			id: 'Product1',
-			title: 'item-one',
+			title: 'Carrot',
 			subtitle: 'Harvest Season',
-			imgUrl: 'https://plus.unsplash.com/premium_photo-1661281266225-6a03f48cda57?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8dmVnZ2llc3xlbnwwfHwwfHx8MA%3D%3D',
+			imgUrl: 'https://images.unsplash.com/photo-1589927986089-35812388d1f4?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Y2Fycm90fGVufDB8fDB8fHww',
 			description: 'The harvest season for apples peaks in autumn, making it the best time to visit orchards.',
 			address: 'Seoul',
 			email: 'youn@labnightowl.dev',
@@ -26,9 +20,9 @@
 		},
 		{
 			id: 'Product2',
-			title: 'item-two',
+			title: 'Straberry',
 			subtitle: 'Harvest Season',
-			imgUrl: 'https://plus.unsplash.com/premium_photo-1661281266225-6a03f48cda57?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8dmVnZ2llc3xlbnwwfHwwfHx8MA%3D%3D',
+			imgUrl: 'https://images.unsplash.com/photo-1587393855524-087f83d95bc9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c3RyYWJlcnJ5fGVufDB8fDB8fHww',
 			description: 'The harvest season for apples peaks in autumn, making it the best time to visit orchards.',
 			address: 'Seoul',
 			email: 'youn@labnightowl.dev',
@@ -36,9 +30,9 @@
 		},
 		{
 			id: 'Product3',
-			title: 'item-three',
+			title: 'Cabbage',
 			subtitle: 'Harvest Season',
-			imgUrl: 'https://plus.unsplash.com/premium_photo-1661281266225-6a03f48cda57?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8dmVnZ2llc3xlbnwwfHwwfHx8MA%3D%3D',
+			imgUrl: 'https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y2FiYmFnZXxlbnwwfHwwfHx8MA%3D%3D',
 			description: 'The harvest season for apples peaks in autumn, making it the best time to visit orchards.',
 			address: 'Seoul',
 			email: 'youn@labnightowl.dev',
@@ -46,21 +40,29 @@
 		},
 		
 	]
-	function addProduct(){
+
+	let editMode = null;
+
+	function addProduct(event){
 		const newProduct ={
 			id: "Product" + Math.random().toString(),
-			title: title,
-			subtitle: subtitle,
-			address: address,
-			imgUrl: imgUrl,
-			description: description,
-			contact: email,
+			title: event.detail.title,
+			subtitle: event.detail.subtitle,
+			address: event.detail.address,
+			imgUrl: event.detail.imgUrl,
+			description: event.detail.description,
+			contact: event.detail.email
 		};
 	
 		// products.push(newProduct) svelte에서는 적용 안됨.
 		products = [newProduct, ...products];
+		editMode = null;
 	}
 	
+	function cancelEdit(){
+		editMode = null;
+	}
+
 	function toggleheart(event){
 		const id = event.detail;
 		const updatedProduct = { ...products.find(m => m.id === id) }; // 업데이트 전 배열복사
@@ -76,45 +78,22 @@
 	main {
 		margin-top: 3rem;
 	}
-	form {
-		width: 30rem;
-		max-width: 90%;
-		margin: auto;
+	.product-controls {
+		margin: 1rem;
 	}
 </style>
 
 <Header />
 
 <main>
-	<form on:submit|preventDefault="{addProduct}">
-		<TextInput 
-			id="title" 
-			label="Title" value={title} 
-			on:input={event => (title = event.target.value)} />
-
-		<TextInput 
-			id="subtitle" 
-			label="Subitle" value={subtitle} 
-			on:input={event => (subtitle = event.target.value)} />
-
-		<TextInput 
-			id="imgUrl" 
-			label="Image URL" value={imgUrl} 
-			on:input={event => (imgUrl = event.target.value)} />
-
-		<TextInput 
-			id="address" 
-			label="Address" value={address} 
-			on:input={event => (address = event.target.value)} />
-
-		<TextInput 
-			id="description" 
-			label="Description" value={description} 
-			controlType="textarea"
-			on:input={event => (description = event.target.value)} />
-		<Button type="submit" caption="Save" />
-	</form>
+	<div class="product-controls">
+		<Button on:click="{() => (editMode = 'add')}">New Product</Button>
+	</div>
+	{#if editMode === 'add'}
+		<EditProduct on:save="{addProduct}" on:cancel={cancelEdit} />
+	{:else}
 	<ProductGrid {products} on:toggleheart="{toggleheart}" />
+	{/if}
 </main>
 
 

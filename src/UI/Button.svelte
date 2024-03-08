@@ -3,6 +3,7 @@
     export let caption;
     export let href = null;
     export let mode = null;
+    export let color = null;
 </script>
 
 <style>
@@ -61,7 +62,10 @@
 
         .outline:hover,
         .outline:active {
-        background: #94ce0d94;
+        /* background: #94ce0d94; */
+        color: #ce6a0d;
+        background: #ce710d94;
+        border-color: #ce6a0d;
         box-shadow: none;
         }
 
@@ -84,7 +88,11 @@
 </style>
 
 {#if href}
-    <a {href} >{caption}</a>
+    <a {href}>
+        <slot />
+    </a>
 {:else}
-    <button class="{mode}" {type}on:click=>{caption}</button>
+    <button class="{mode} {color}" {type} on:click>
+        <slot />
+    </button>
 {/if}

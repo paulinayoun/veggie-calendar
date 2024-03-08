@@ -1,6 +1,7 @@
 <script>
     import Button from "../UI/Button.svelte";
     import { createEventDispatcher } from 'svelte';
+    import Bedge from "../UI/Bedge.svelte";
 
     export let id;
     export let title;
@@ -44,7 +45,7 @@
     font-family: "Roboto Slab", sans-serif;
   }
 
-  h1.is-favorite {
+  h1.is-heart {
     background: #01a129;
     color: white;
     padding: 0 0.5rem;
@@ -71,23 +72,32 @@
 </style>
 <article>
     <header>
-        <h1>{title}</h1>
+        <h1> 
+          {#if isOn}
+           <Bedge>♥</Bedge>
+          {/if}
+          {title}
+        </h1>
         <h2>{subtitle}</h2>
         <p>{address}</p>
     </header>
     <div class="img">
-        <img src="{imgUrl}" alt={title}>
+        <img src={imgUrl} alt={title} />
     </div>
     <div class="content">
         <p>{description}</p>
     </div>
     <footer>   
-        <Button href="mailto:{email}" caption="Contact" />
-        <Button type="buttion" caption="Show Detail"/>
+        <Button href="mailto:{email}">Contact</Button>
         <Button 
-        mode="outline" 
-        type="buttion" 
-        caption="{isOn ? 'Not Heart' : 'Heart'}" 
-        on:click={() => dispatch('toggleheart', id)} />
+        mode="outline"
+        color={isOn ? null : "success"}
+        type="button" 
+        on:click={() => dispatch('toggleheart', id)}>
+          {isOn ? '♥' : '♡'}
+        </Button>
+        <Button type="button">
+          Show Details  
+        </Button>
     </footer>
 </article>
