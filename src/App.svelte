@@ -1,76 +1,41 @@
 <script>
 	import { each, prevent_default } from "svelte/internal";
+	import products from "./products/products-store.js"
 	import Header  from "./UI/Header.svelte";
 	import Product from "./products/Product.svelte"
 	import TextInput from "./UI/TextInput.svelte";
     import ProductGrid from "./products/ProductGrid.svelte";
 	import Button from "./UI/Button.svelte";
 	import EditProduct from "./products/EditProduct.svelte";
+    import ProductDetail from "./products/ProductDetail.svelte";
 
-	let products = [
-		{
-			id: 'Product1',
-			title: 'Carrot',
-			subtitle: 'Harvest Season',
-			imgUrl: 'https://images.unsplash.com/photo-1589927986089-35812388d1f4?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Y2Fycm90fGVufDB8fDB8fHww',
-			description: 'The harvest season for apples peaks in autumn, making it the best time to visit orchards.',
-			address: 'Seoul',
-			email: 'youn@labnightowl.dev',
-			isHeart: false
-		},
-		{
-			id: 'Product2',
-			title: 'Straberry',
-			subtitle: 'Harvest Season',
-			imgUrl: 'https://images.unsplash.com/photo-1587393855524-087f83d95bc9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c3RyYWJlcnJ5fGVufDB8fDB8fHww',
-			description: 'The harvest season for apples peaks in autumn, making it the best time to visit orchards.',
-			address: 'Seoul',
-			email: 'youn@labnightowl.dev',
-			isHeart: false
-		},
-		{
-			id: 'Product3',
-			title: 'Cabbage',
-			subtitle: 'Harvest Season',
-			imgUrl: 'https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y2FiYmFnZXxlbnwwfHwwfHx8MA%3D%3D',
-			description: 'The harvest season for apples peaks in autumn, making it the best time to visit orchards.',
-			address: 'Seoul',
-			email: 'youn@labnightowl.dev',
-			isHeart: false
-		},
-		
-	]
+	//let products = ;
 
-	let editMode = null;
+	let editMode;
+	let editedId;
+	let page = 'overview';
+	let pageData = {};
 
-	function addProduct(event){
-		const newProduct ={
-			id: "Product" + Math.random().toString(),
-			title: event.detail.title,
-			subtitle: event.detail.subtitle,
-			address: event.detail.address,
-			imgUrl: event.detail.imgUrl,
-			description: event.detail.description,
-			contact: event.detail.email
-		};
-	
-		// products.push(newProduct) svelte에서는 적용 안됨.
-		products = [newProduct, ...products];
+	function savedProduct(event){
 		editMode = null;
+		editedId = null;
 	}
-	
+
 	function cancelEdit(){
 		editMode = null;
+		editedId = null;
 	}
-
-	function toggleheart(event){
-		const id = event.detail;
-		const updatedProduct = { ...products.find(m => m.id === id) }; // 업데이트 전 배열복사
-		updatedProduct.isHeart = !updatedProduct.isHeart;
-		const productIndex = products.findIndex(m => m.id === id);
-		const updatedProduts = [...products]; // 배열 전체 복사
-		updatedProduts[productIndex] = updatedProduct; // 요소 하나를 대체하여 복사한 배열 업데이트
-		products = updatedProduts; // 기존 배열에 덮어씀, 등호 사용시 DOM에서 트리거 인식하게 되므로 렌더링 실행.
+	function showDetails(event) {
+		page = 'details';
+		pageData.id = event.detail;
+	}
+	function closeDetails() {
+		page = 'overview';
+		pageData = {};
+	}
+	function onEdit(event){
+		editMode = 'edit';
+		editedId = event.detail;
 	}
 </script>
 
@@ -78,21 +43,22 @@
 	main {
 		margin-top: 3rem;
 	}
-	.product-controls {
-		margin: 1rem;
-	}
 </style>
 
 <Header />
 
 <main>
-	<div class="product-controls">
-		<Button on:click="{() => (editMode = 'add')}">New Product</Button>
-	</div>
-	{#if editMode === 'add'}
-		<EditProduct on:save="{addProduct}" on:cancel={cancelEdit} />
+	{#if page === 'overview'}
+		{#if editMode === 'edit'}
+			<EditProduct id={editedId} on:save="{savedProduct}" on:cancel={cancelEdit} />
+		{/if}
+		<ProductGrid 
+			products={$products} 
+			on:showdetails={showDetails} 
+			on:edit="{onEdit}"
+			on:add={() => {editMode = 'edit'}}/>
 	{:else}
-	<ProductGrid {products} on:toggleheart="{toggleheart}" />
+		<ProductDetail id={pageData.id} on:close={closeDetails} />
 	{/if}
 </main>
 

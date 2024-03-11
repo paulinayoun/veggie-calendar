@@ -1,6 +1,9 @@
 <script>
+    import { createEventDispatcher } from "svelte";
+    import { scale } from "svelte/types/runtime/transition";
+    import { flip } from "svelte/types/runtime/animate";
+    import products from "./products-store.js";
     import Button from "../UI/Button.svelte";
-    import { createEventDispatcher } from 'svelte';
     import Bedge from "../UI/Bedge.svelte";
 
     export let id;
@@ -13,6 +16,11 @@
     export let isOn;
 
     const dispatch = createEventDispatcher();
+
+    function toggleheart() {
+      products.toggleheart(id);
+    };
+
 </script>
 <style>
     article {
@@ -70,7 +78,7 @@
     height: 4rem;
   }
 </style>
-<article>
+<article transition:scale>
     <header>
         <h1> 
           {#if isOn}
@@ -87,17 +95,16 @@
     <div class="content">
         <p>{description}</p>
     </div>
-    <footer>   
+    <footer>
+        <Button mode="outline" type="button" on:click={() => dispatch('edit', id)}>Edit</Button>
         <Button href="mailto:{email}">Contact</Button>
         <Button 
         mode="outline"
         color={isOn ? null : "success"}
         type="button" 
-        on:click={() => dispatch('toggleheart', id)}>
-          {isOn ? '♥' : '♡'}
+        on:click={toggleheart}>
+        {isOn ? '♥' : '♡'}
         </Button>
-        <Button type="button">
-          Show Details  
-        </Button>
+        <Button type="button" on:click={() => dispatch('showdetails', id)}>Show Details</Button>
     </footer>
 </article>
